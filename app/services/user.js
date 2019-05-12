@@ -34,3 +34,11 @@ exports.changePassword = (id, password) => {
   logger.info(`Updating password for user ${id}`);
   return update(body, where);
 };
+
+exports.findByEmail = email =>
+  Users.findOne({
+    attributes: { exclude: ['created_at', 'updated_at'] },
+    where: { email }
+  }).catch(err => {
+    throw errors.databaseError(err.message);
+  });

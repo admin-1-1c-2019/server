@@ -32,18 +32,19 @@ exports.signUp = (req, res, next) => {
     .catch(next);
 };
 
-exports.confirmation = (req, res, next) =>
-  userService
-    .confirmation(res.user.email)
+exports.confirmation = (req, res, next) => {
+  return userService
+    .confirmation(req.user.email)
     .then(() => {
       logger.info('User Confirmed');
-      return res.status(200).send(`User with email: ${res.user.email} confirmed`);
+      return req.status(200).send(`User with email: ${req.user.email} confirmed`);
     })
     .catch(next);
+};
 
 exports.resendEmail = (req, res, next) => {
   const { email } = req.body;
-  userService
+  return userService
     .findByEmail(email)
     .then(user => {
       if (!user) {
@@ -57,6 +58,23 @@ exports.resendEmail = (req, res, next) => {
     })
     .then(() => {
       logger.info(`Email resent to user ${email}`);
+      res.status(200).send();
+    })
+    .catch(next);
+};
+
+exports.recoverPassword = (req, res, next) => {
+  const { email } = req.body;
+
+  return userService
+    .findByEmail(email)
+    .then(user => {
+      if (!user) throw errors.unregisteredUser();
+      logger.info('Sending email to recover password');
+      return emailService.sendMailRecoverPassword(user.dataValues);
+    })
+    .then(() => {
+      logger.info(`Recover password email resent to user ${email}`);
       res.status(200).send();
     })
     .catch(next);

@@ -28,3 +28,33 @@ exports.signUp = {
     errorMessage: paramsValidations.LAST_NAME
   }
 };
+
+exports.resendEmail = {
+  email: {
+    in: ['body'],
+    errorMessage: paramsValidations.EMAIL,
+    isEmail: true
+  }
+};
+
+exports.changePassword = {
+  password: {
+    in: ['body'],
+    isString: true,
+    isLength: {
+      options: {
+        min: 8,
+        max: 25
+      }
+    },
+    errorMessage: paramsValidations.PASSWORD
+  }
+};
+
+exports.recoverPassword = {
+  email: {
+    in: ['body'],
+    errorMessage: paramsValidations.EMAIL,
+    isEmail: true
+  }
+};

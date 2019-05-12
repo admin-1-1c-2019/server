@@ -11,7 +11,7 @@ const isObject = variable => variable instanceof Object;
 /*
  * Deep copy of source object into tarjet object.
  * It does not overwrite properties.
-*/
+ */
 const assignObject = (target, source) => {
   if (target && isObject(target) && source && isObject(source)) {
     Object.keys(source).forEach(key => {
@@ -36,7 +36,16 @@ const config = {
     api: {
       bodySizeLimit: process.env.API_BODY_SIZE_LIMIT,
       parameterLimit: process.env.API_PARAMETER_LIMIT,
-      port: process.env.PORT
+      port: process.env.PORT,
+      url: process.env.API_URL
+    },
+    email: {
+      username: process.env.EMAIL_USERNAME,
+      password: process.env.EMAIL_PASSWORD,
+      expireTime: process.env.EMAIL_EXPIRE_TIME,
+      confirmation: process.env.CONFIRMATION_ENDPOINT,
+      recoverPass: process.env.RECOVER_PASS_ENDPOINT,
+      from: process.env.FROM_EMAIL
     },
     session: {
       header_name: 'authorization',

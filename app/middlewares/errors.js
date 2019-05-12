@@ -5,7 +5,16 @@ const DEFAULT_STATUS_CODE = 500;
 
 const statusCodes = {
   [errors.DATABASE_ERROR]: 503,
-  [errors.DEFAULT_ERROR]: 500
+  [errors.DEFAULT_ERROR]: 500,
+  [errors.MAIL_ERROR]: 400,
+  [errors.AUTHENTICATION_ERROR]: 401,
+  [errors.UNREGISTERED_USER]: 401,
+  [errors.INEXISTENT_TOKEN]: 401,
+  [errors.SCHEMA_ERROR]: 422,
+  [errors.INEXISTENT_TOKEN]: 401,
+  [errors.UNREGISTERED_USER]: 400,
+  [errors.UNCONFIRMED_USER]: 409,
+  [errors.REGISTERED_USER]: 401
 };
 
 exports.handle = (error, req, res, next) => {

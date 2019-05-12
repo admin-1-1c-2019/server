@@ -16,8 +16,7 @@ const truncateTable = model =>
 const truncateDatabase = () => Promise.all(tables.map(truncateTable));
 
 beforeEach(done => {
-  truncateDatabase()
-    .then(() => done());
+  truncateDatabase().then(() => done());
 });
 
 // including all test files

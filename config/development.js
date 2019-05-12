@@ -4,6 +4,6 @@ exports.config = {
     database: {
       name: process.env.DB_NAME_DEV
     }
-  }, 
+  },
   isDevelopment: true
 };

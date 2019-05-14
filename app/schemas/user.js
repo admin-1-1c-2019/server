@@ -58,3 +58,16 @@ exports.recoverPassword = {
     isEmail: true
   }
 };
+
+exports.logIn = {
+  email: {
+    in: ['body'],
+    errorMessage: paramsValidations.EMAIL,
+    isEmail: true
+  },
+  password: {
+    in: ['body'],
+    errorMessage: paramsValidations.PASSWORD,
+    isString: true
+  }
+};

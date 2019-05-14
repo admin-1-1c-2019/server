@@ -23,4 +23,10 @@ exports.init = app => {
     [authMiddleware.authenticate, paramsValidator.validateSchemaAndFail(schemas.user.changePassword)],
     userController.changePassword
   );
+
+  app.post(
+    `/users/login`,
+    [paramsValidator.validateSchemaAndFail(schemas.user.logIn)],
+    userController.loginIndividual
+  );
 };

@@ -1,8 +1,8 @@
 const userService = require('../services/user'),
   emailService = require('../services/email'),
   userMapper = require('../mapper/user'),
-  // bcrypt = require('bcryptjs'),
-  // sessionManager = require('../helpers/session_manager'),
+  bcrypt = require('bcryptjs'),
+  sessionManager = require('../helpers/session_manager'),
   errors = require('../errors'),
   logger = require('../logger');
 
@@ -89,3 +89,25 @@ exports.changePassword = (req, res, next) =>
       return res.status(200).send('User password changed.');
     })
     .catch(next);
+
+exports.loginIndividual = (req, res, next) => {
+  const { email, password } = req.body;
+  logger.info(`User with email ${email} attempting to login`);
+  return userService
+    .findByEmail(email)
+    .then(user => {
+      if (!user) return next(errors.authenticationError('Incorrect email or password'));
+      if (user && !user.active) return next(errors.unconfirmedUser());
+      return bcrypt.compare(password, user.password).then(match => {
+        if (!match) return next(errors.authenticationError('Incorrect email or password'));
+        const authentication = sessionManager.encode({ email });
+        logger.info(`User with email ${email} is now logged`);
+        return res
+          .status(201)
+          .set(sessionManager.HEADER_NAME, authentication)
+          .send(user);
+      });
+    })
+    .catch(next);
+};
+    

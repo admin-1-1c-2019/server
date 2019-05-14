@@ -37,7 +37,7 @@ exports.confirmation = (req, res, next) => {
     .confirmation(req.user.email)
     .then(() => {
       logger.info('User Confirmed');
-      return req.status(200).send(`User with email: ${req.user.email} confirmed`);
+      return res.status(200).send(`User with email: ${req.user.email} confirmed`);
     })
     .catch(next);
 };

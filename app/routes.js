@@ -7,7 +7,7 @@ const { healthCheck } = require('./controllers/healthCheck'),
 exports.init = app => {
   app.get('/health', healthCheck);
   app.post('/users', [paramsValidator.validateSchemaAndFail(schemas.user.signUp)], userController.signUp);
-  app.put('/users', [], userController.confirmation);
+  app.put('/users', [authMiddleware.authenticate], userController.confirmation);
   app.post(
     '/users/resend_email',
     [paramsValidator.validateSchemaAndFail(schemas.user.resendEmail)],

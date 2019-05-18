@@ -49,5 +49,5 @@ node_modules
 .vscode/
 
 # eslint
-.eslintrc.js
-.eslintignore
+# .eslintrc.js
+# .eslintignore

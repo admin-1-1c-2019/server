@@ -32,15 +32,14 @@ exports.signUp = (req, res, next) => {
     .catch(next);
 };
 
-exports.confirmation = (req, res, next) => {
-  return userService
+exports.confirmation = (req, res, next) =>
+  userService
     .confirmation(req.user.email)
     .then(() => {
       logger.info('User Confirmed');
       return res.status(200).send(`User with email: ${req.user.email} confirmed`);
     })
     .catch(next);
-};
 
 exports.resendEmail = (req, res, next) => {
   const { email } = req.body;
@@ -69,7 +68,9 @@ exports.recoverPassword = (req, res, next) => {
   return userService
     .findByEmail(email)
     .then(user => {
-      if (!user) throw errors.unregisteredUser();
+      if (!user) {
+        throw errors.unregisteredUser();
+      }
       logger.info('Sending email to recover password');
       return emailService.sendMailRecoverPassword(user.dataValues);
     })
@@ -96,10 +97,16 @@ exports.loginIndividual = (req, res, next) => {
   return userService
     .findByEmail(email)
     .then(user => {
-      if (!user) return next(errors.authenticationError('Incorrect email or password'));
-      if (user && !user.active) return next(errors.unconfirmedUser());
+      if (!user) {
+        return next(errors.authenticationError('Incorrect email or password'));
+      }
+      if (user && !user.active) {
+        return next(errors.unconfirmedUser());
+      }
       return bcrypt.compare(password, user.password).then(match => {
-        if (!match) return next(errors.authenticationError('Incorrect email or password'));
+        if (!match) {
+          return next(errors.authenticationError('Incorrect email or password'));
+        }
         const authentication = sessionManager.encode({ email });
         logger.info(`User with email ${email} is now logged`);
         return res
@@ -110,4 +117,3 @@ exports.loginIndividual = (req, res, next) => {
     })
     .catch(next);
 };
-    

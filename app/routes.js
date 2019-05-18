@@ -25,7 +25,7 @@ exports.init = app => {
   );
 
   app.post(
-    `/users/login`,
+    '/users/login',
     [paramsValidator.validateSchemaAndFail(schemas.user.logIn)],
     userController.loginIndividual
   );

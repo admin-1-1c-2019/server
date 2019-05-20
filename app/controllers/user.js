@@ -37,7 +37,7 @@ exports.confirmation = (req, res, next) =>
     .confirmation(req.user.email)
     .then(() => {
       logger.info('User Confirmed');
-      return res.status(200).send(`User with email: ${req.user.email} confirmed`);
+      return res.status(201).send(`User with email: ${req.user.email} confirmed`);
     })
     .catch(next);
 
@@ -87,7 +87,7 @@ exports.changePassword = (req, res, next) =>
     .then(password => userService.changePassword(req.user.id, password))
     .then(() => {
       logger.info('User password updated.');
-      return res.status(200).send('User password changed.');
+      return res.status(201).send('User password changed.');
     })
     .catch(next);
 

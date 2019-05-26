@@ -16,6 +16,7 @@ const should = chai.should(),
   endpointResend = '/users/resend_email',
   endpointRecover = '/users/recover_password',
   endpointLogin = '/users/login',
+  endpointAdmin = '/users/admin',
   timeToExpire = '1s';
 /* eslint-enable no-unused-vars */
 
@@ -369,6 +370,71 @@ describe('User Controller', () => {
           .send(body)
           .then(res => {
             res.status.should.equal(401);
+          });
+      }));
+  });
+  describe('/users/admin PUT', () => {
+    let token = null;
+    const body = {};
+    it('Should be successful', () =>
+      Promise.all([
+        factory.create('users', { active: true, admin: true }),
+        factory.create('users', { active: true })
+      ]).then(([admin, user]) => {
+        token = encode(admin.dataValues, timeToExpire);
+        body.email = user.dataValues.email;
+        return chai
+          .request(server)
+          .put(endpointAdmin)
+          .set('authorization', token)
+          .send(body)
+          .then(res => {
+            res.status.should.equal(201);
+            return models.users.findOne({ where: { email: body.email } }).then(foundUser => {
+              foundUser.dataValues.admin.should.equal(true);
+            });
+          });
+      }));
+    it('Should fail because user is not admin', () =>
+      Promise.all([
+        factory.create('users', { active: true }),
+        factory.create('users', { active: true })
+      ]).then(([admin, user]) => {
+        token = encode(admin.dataValues, timeToExpire);
+        body.email = user.dataValues.email;
+        return chai
+          .request(server)
+          .put(endpointAdmin)
+          .set('authorization', token)
+          .send(body)
+          .then(res => {
+            res.status.should.equal(409);
+          });
+      }));
+    it('Should fail because user doesnt exist', () =>
+      factory.create('users', { active: true, admin: true }).then(admin => {
+        token = encode(admin.dataValues, timeToExpire);
+        body.email = 'test@test.com';
+        return chai
+          .request(server)
+          .put(endpointAdmin)
+          .set('authorization', token)
+          .send(body)
+          .then(res => {
+            res.status.should.equal(401);
+          });
+      }));
+    it('Should fail because body is incorrect', () =>
+      factory.create('users', { active: true, admin: true }).then(admin => {
+        token = encode(admin.dataValues, timeToExpire);
+        const bodyTest = { mail: 'test@test.com' };
+        return chai
+          .request(server)
+          .put(endpointAdmin)
+          .set('authorization', token)
+          .send(bodyTest)
+          .then(res => {
+            res.status.should.equal(422);
           });
       }));
   });

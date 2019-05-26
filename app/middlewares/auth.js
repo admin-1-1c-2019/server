@@ -6,7 +6,7 @@ const errors = require('../errors'),
 
 const HEADER_NAME = config.common.session.header_name;
 
-exports.authenticate = (req, res, next) => {
+const authenticate = (admin, req, res, next) => {
   const token = req.headers[HEADER_NAME];
   if (!token) {
     return next(errors.inexistentToken());
@@ -16,6 +16,9 @@ exports.authenticate = (req, res, next) => {
     return userService.findByEmail(email).then(user => {
       if (!user) {
         return next(errors.unregisteredUser());
+      }
+      if (admin && !user.admin) {
+        return next(errors.userNotAdmin(email));
       }
       req.user = user.dataValues;
       logger.info(`User with email ${email} authenticated`);
@@ -28,3 +31,6 @@ exports.authenticate = (req, res, next) => {
     return next(errors.authenticationError('The token is not valid'));
   }
 };
+
+exports.authenticate = (req, res, next) => authenticate(false, req, res, next);
+exports.authenticateAdmin = (req, res, next) => authenticate(true, req, res, next);

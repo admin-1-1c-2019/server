@@ -117,3 +117,21 @@ exports.loginIndividual = (req, res, next) => {
     })
     .catch(next);
 };
+
+exports.upgradeAdmin = (req, res, next) => {
+  const { email } = req.body;
+  logger.info(`User with email ${email} is upgrading to Admin`);
+  return userService
+    .findByEmail(email)
+    .then(user => {
+      if (!user) {
+        return next(errors.unregisteredUser(email));
+      }
+      if (user && !user.active) {
+        return next(errors.unconfirmedUser());
+      }
+      return userService.upgradeAdmin(user.id);
+    })
+    .then(() => res.status(201).send())
+    .catch(next);
+};

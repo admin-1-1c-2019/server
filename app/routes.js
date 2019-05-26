@@ -29,4 +29,10 @@ exports.init = app => {
     [paramsValidator.validateSchemaAndFail(schemas.user.logIn)],
     userController.loginIndividual
   );
+
+  app.put(
+    '/users/admin',
+    [authMiddleware.authenticateAdmin, paramsValidator.validateSchemaAndFail(schemas.user.upgradeAdmin)],
+    userController.upgradeAdmin
+  );
 };

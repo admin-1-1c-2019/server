@@ -42,3 +42,10 @@ exports.findByEmail = email =>
   }).catch(err => {
     throw errors.databaseError(err.message);
   });
+
+exports.upgradeAdmin = id => {
+  const where = { id };
+  const body = { admin: true };
+  logger.info(`Enabling admin for id ${id}`);
+  return update(body, where);
+};

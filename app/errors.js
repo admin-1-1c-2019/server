@@ -40,3 +40,6 @@ exports.inexistentToken = () => internalError('Inexistent Token', exports.INEXIS
 exports.UNCONFIRMED_USER = 'unconfirmed_user';
 exports.unconfirmedUser = () =>
   internalError("The user hasn't confirmed the account yet", exports.UNCONFIRMED_USER);
+
+exports.NOT_ADMIN = 'user_not_admin';
+exports.userNotAdmin = email => internalError(`User with ${email} isn't admin`, exports.NOT_ADMIN);

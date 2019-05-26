@@ -10,7 +10,7 @@ exports.REGISTERED_USER = 'registered_user';
 exports.registeredUser = () => internalError('User already registered', exports.REGISTERED_USER);
 
 exports.ACTIVE_USER = 'active_user';
-exports.activeUser = () => internalError('User already active', exports.ACTIVE_USER);
+exports.activeUser = email => internalError(`User with ${email} is already active`, exports.ACTIVE_USER);
 
 exports.MAIL_ERROR = 'mail_error';
 exports.emailError = message => internalError(message, exports.MAIL_ERROR);

@@ -12,9 +12,9 @@ const statusCodes = {
   [errors.INEXISTENT_TOKEN]: 401,
   [errors.SCHEMA_ERROR]: 422,
   [errors.INEXISTENT_TOKEN]: 401,
-  [errors.UNREGISTERED_USER]: 400,
   [errors.UNCONFIRMED_USER]: 409,
-  [errors.REGISTERED_USER]: 401
+  [errors.REGISTERED_USER]: 401,
+  [errors.ACTIVE_USER]: 401
 };
 
 exports.handle = (error, req, res, next) => {

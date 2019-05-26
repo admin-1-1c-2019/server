@@ -47,10 +47,10 @@ exports.resendEmail = (req, res, next) => {
     .findByEmail(email)
     .then(user => {
       if (!user) {
-        throw errors.unregisteredUser();
+        throw errors.unregisteredUser(email);
       }
       if (user.active) {
-        throw errors.activeUser();
+        throw errors.activeUser(email);
       }
       logger.info('Resending email to confirm account');
       return emailService.sendMailConfirmation(user.dataValues);

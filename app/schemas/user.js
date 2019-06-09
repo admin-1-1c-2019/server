@@ -71,3 +71,11 @@ exports.logIn = {
     isString: true
   }
 };
+
+exports.upgradeAdmin = {
+  email: {
+    in: ['body'],
+    errorMessage: paramsValidations.EMAIL,
+    isEmail: true
+  }
+};

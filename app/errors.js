@@ -43,3 +43,10 @@ exports.unconfirmedUser = () =>
 
 exports.NOT_ADMIN = 'user_not_admin';
 exports.userNotAdmin = email => internalError(`User with ${email} isn't admin`, exports.NOT_ADMIN);
+
+exports.EXISTENT_ACTIVE_PRINCIPLE = 'existent_principle_active';
+exports.existentActivePrinciple = name =>
+  internalError(`Active principle with name ${name} already exists`, exports.EXISTENT_ACTIVE_PRINCIPLE);
+
+exports.EXISTENT_PRODUCT = 'existent_product';
+exports.existentProduct = errors => internalError(JSON.stringify(errors), exports.EXISTENT_PRODUCT);

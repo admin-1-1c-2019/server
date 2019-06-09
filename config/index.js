@@ -51,7 +51,12 @@ const config = {
       header_name: 'authorization',
       secret: process.env.NODE_API_SESSION_SECRET,
       expiryTime: process.env.EXPIRY_TIME
-    }
+    },
+    pagination: {
+      limit: process.env.LIMIT,
+      page: process.env.PAGE
+    },
+    activePrincipleSizes: [70, 100, 150, 250]
   }
 };
 

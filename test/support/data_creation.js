@@ -2,7 +2,8 @@ const models = require('./../../app/models'),
   { factory } = require('factory-girl'),
   bcrypt = require('bcryptjs');
 
-const Users = models.users;
+const Users = models.users,
+  ActivePrinciples = models.activePrinciples;
 
 factory.define(
   'users',
@@ -23,3 +24,8 @@ factory.define(
       })
   }
 );
+
+factory.define('principles', ActivePrinciples, {
+  name: factory.chance('string'),
+  description: factory.chance('string')
+});

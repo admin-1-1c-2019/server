@@ -17,7 +17,8 @@ const statusCodes = {
   [errors.ACTIVE_USER]: 401,
   [errors.NOT_ADMIN]: 409,
   [errors.EXISTENT_ACTIVE_PRINCIPLE]: 401,
-  [errors.EXISTENT_PRODUCT]: 401
+  [errors.EXISTENT_PRODUCT]: 401,
+  [errors.NOT_FOUND]: 404
 };
 
 exports.handle = (error, req, res, next) => {

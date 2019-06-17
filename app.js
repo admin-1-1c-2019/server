@@ -22,7 +22,11 @@ const bodyParserUrlencodedConfig = () => ({
 
 const app = express();
 
-app.use(cors());
+const corsOptions = {
+  exposedHeaders: 'Authorization'
+};
+
+app.use(cors(corsOptions));
 
 app.use('/docs', express.static(path.join(__dirname, 'docs')));
 

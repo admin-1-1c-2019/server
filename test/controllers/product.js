@@ -6,7 +6,7 @@ const chai = require('chai'),
 
 /* eslint-disable no-unused-vars */
 const should = chai.should(),
-  endpoint = '/active_principles',
+  endpoint = '/products',
   endpointLogin = '/users/login',
   PASSWORD = '12345678';
 /* eslint-enable no-unused-vars */
@@ -19,14 +19,14 @@ const login = (email, password = PASSWORD) => {
     .send(body);
 };
 
-describe('Active Principle Controller', () => {
-  describe('/active_principle GET', () => {
+describe('Products Controller', () => {
+  describe('/products GET', () => {
     let token = null;
 
     beforeEach('', () =>
       Promise.all([
         factory.create('users', { active: true, password: PASSWORD }),
-        factory.createMany('principles', 20)
+        factory.createMany('products', 20)
       ]).then(([user]) =>
         login(user.email).then(log => {
           token = log.header.authorization;
@@ -42,7 +42,7 @@ describe('Active Principle Controller', () => {
           res.status.should.equal(401);
         }));
 
-    it('Should be successful with all principles', () =>
+    it('Should be successful with all products', () =>
       chai
         .request(server)
         .get(endpoint)
@@ -88,8 +88,7 @@ describe('Active Principle Controller', () => {
           res.body.length.should.equal(2);
         }));
   });
-
-  describe('/active_principle POST', () => {
+  describe('/products POST', () => {
     let token = null;
     let tokenAdmin = null;
 
@@ -137,34 +136,35 @@ describe('Active Principle Controller', () => {
         .then(res => {
           res.status.should.equal(422);
         }));
-    it('Should fail because principle already exists', () =>
-      factory.create('principles').then(principle =>
-        chai
+    it('Should fail because product already exists', () =>
+      factory.create('products').then(product => {
+        const productToCreate = { ...product.dataValues };
+        productToCreate.active_principle_id = productToCreate.activePrincipleId;
+        return chai
           .request(server)
           .post(endpoint)
           .set('authorization', tokenAdmin)
-          .send(principle.dataValues)
+          .send(productToCreate)
           .then(res => {
             res.status.should.equal(401);
-          })
-      ));
+          });
+      }));
   });
-
-  describe('/active_principle/:id GET', () => {
+  describe('/products/:id GET', () => {
     let token = null;
-    let idPrinciple1 = null;
-    let idPrinciple2 = null;
+    let idProduct1 = null;
+    let idProduct2 = null;
 
     beforeEach('', () =>
       Promise.all([
         factory.create('users', { active: true, password: PASSWORD }),
-        factory.create('principles'),
-        factory.build('principles')
-      ]).then(([user, principle1, principle2]) =>
+        factory.create('products'),
+        factory.build('products')
+      ]).then(([user, product1, product2]) =>
         login(user.email).then(logUser => {
           token = logUser.header.authorization;
-          idPrinciple1 = principle1.id;
-          idPrinciple2 = principle2.id;
+          idProduct1 = product1.id;
+          idProduct2 = product2.id;
         })
       )
     );
@@ -172,46 +172,45 @@ describe('Active Principle Controller', () => {
     it('Should fail because isnt token', () =>
       chai
         .request(server)
-        .get(`${endpoint}/${idPrinciple1}`)
+        .get(`${endpoint}/${idProduct1}`)
         .then(res => {
           res.status.should.equal(401);
         }));
     it('Should be successful', () =>
       chai
         .request(server)
-        .get(`${endpoint}/${idPrinciple1}`)
+        .get(`${endpoint}/${idProduct1}`)
         .set('authorization', token)
         .then(res => {
           res.status.should.equal(200);
         }));
-    it('Should fail because principle is inexistent', () =>
+    it('Should fail because product is inexistent', () =>
       chai
         .request(server)
-        .get(`${endpoint}/${idPrinciple2}`)
+        .get(`${endpoint}/${idProduct2}`)
         .set('authorization', token)
         .then(res => {
           res.status.should.equal(404);
         }));
   });
-
-  describe('/active_principle/:id DELETE', () => {
+  describe('/products/:id DELETE', () => {
     let token = null;
     let tokenAdmin = null;
-    let idPrinciple1 = null;
-    let idPrinciple2 = null;
+    let idProduct1 = null;
+    let idProduct2 = null;
 
     beforeEach('', () =>
       Promise.all([
         factory.create('users', { active: true, password: PASSWORD }),
         factory.create('users', { active: true, password: PASSWORD, admin: true }),
-        factory.createMany('principles', 2),
-        factory.build('principles')
-      ]).then(([user, admin, principles, principle]) =>
+        factory.createMany('products', 2),
+        factory.build('products')
+      ]).then(([user, admin, products, principle]) =>
         Promise.all([login(user.email), login(admin.email)]).then(([logUser, logAdmin]) => {
           token = logUser.header.authorization;
           tokenAdmin = logAdmin.header.authorization;
-          idPrinciple1 = principles[0].id;
-          idPrinciple2 = principle.id;
+          idProduct1 = products[0].id;
+          idProduct2 = principle.id;
         })
       )
     );
@@ -219,37 +218,37 @@ describe('Active Principle Controller', () => {
     it('Should fail because isnt token', () =>
       chai
         .request(server)
-        .delete(`${endpoint}/${idPrinciple1}`)
+        .delete(`${endpoint}/${idProduct1}`)
         .then(res => {
           res.status.should.equal(401);
         }));
     it('Should fail because user isnt admin', () =>
       chai
         .request(server)
-        .delete(`${endpoint}/${idPrinciple1}`)
+        .delete(`${endpoint}/${idProduct1}`)
         .set('authorization', token)
         .then(res => {
           res.status.should.equal(409);
         }));
-    it('Should fail because principle is inexistent', () =>
+    it('Should fail because product is inexistent', () =>
       chai
         .request(server)
-        .delete(`${endpoint}/${idPrinciple2}`)
+        .delete(`${endpoint}/${idProduct2}`)
         .set('authorization', tokenAdmin)
         .then(res => {
           res.status.should.equal(404);
         }));
     it('Should be successful', () =>
-      models.activePrinciples.findAll().then(principles => {
-        principles.length.should.equal(2);
+      models.products.findAll().then(products => {
+        products.length.should.equal(2);
         return chai
           .request(server)
-          .delete(`${endpoint}/${idPrinciple1}`)
+          .delete(`${endpoint}/${idProduct1}`)
           .set('authorization', tokenAdmin)
           .then(res => {
             res.status.should.equal(200);
-            return models.activePrinciples.findAll().then(actualPrinciples => {
-              actualPrinciples.length.should.equal(1);
+            return models.products.findAll().then(actualProducts => {
+              actualProducts.length.should.equal(1);
             });
           });
       }));

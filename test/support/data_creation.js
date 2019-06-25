@@ -1,9 +1,12 @@
 const models = require('./../../app/models'),
   { factory } = require('factory-girl'),
-  bcrypt = require('bcryptjs');
+  bcrypt = require('bcryptjs'),
+  config = require('../../config');
 
 const Users = models.users,
-  ActivePrinciples = models.activePrinciples;
+  ActivePrinciples = models.activePrinciples,
+  Products = models.products,
+  sizes = config.common.activePrincipleSizes;
 
 factory.define(
   'users',
@@ -28,4 +31,12 @@ factory.define(
 factory.define('principles', ActivePrinciples, {
   name: factory.chance('string'),
   description: factory.chance('string')
+});
+
+factory.define('products', Products, {
+  name: factory.chance('string'),
+  description: factory.chance('string'),
+  images: ['image1', 'image2', 'image3'],
+  size: factory.chance('pickone', sizes),
+  activePrincipleId: factory.assoc('principles', 'id')
 });
